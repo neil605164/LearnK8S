@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  # metadata.name Pod 的名稱
+  name: my-pod
+  # metadata.labels 將 Pod 分群管理的工具
+  labels:
+    name: webServer
+# spec 定義 container 資訊
+spec:
+  containers:
+  # container.name 設定 container 的名稱
+  - name: pod-demo
+    # container.image DockerHub 的印象檔
+    image: zxcvbnius/docker-demo
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    # container.ports 該 container 有哪些 port number 是允許外部資源存取
+    ports:
+      - containerPort: 3000
