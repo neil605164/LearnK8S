@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service-demo
+spec:
+  selector:
+    name: webserver
+  ports:
+    # 掛出來的port
+  - port: 3030
+    # 容器內的port
+    targetPort: 3000
