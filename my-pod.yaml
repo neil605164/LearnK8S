@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-secret-pod-demo
+  labels:
+    name: webserver
+spec:
+  containers:
+  - name: demo-secret-pods
+    image: zxcvbnius/docker-demo
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 3000
+    env:
+      - name: SECRET_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: demo-secret
+            key: username
+      - name: SECRET_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: demo-secret
+            key: password
