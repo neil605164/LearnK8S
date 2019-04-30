@@ -30,7 +30,7 @@ metadata:
   name: golang-service
 spec:
   selector:
-    app: hello-go
+    app: golang  # 必須跟deployment相同
   ports:
   - port: 8000
     targetPort: 8080
