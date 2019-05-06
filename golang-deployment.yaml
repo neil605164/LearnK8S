@@ -6,28 +6,36 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      app: golang
+      service: golang
   template:
     metadata:
       labels:
-        app: golang
+        service: golang
     spec:
       containers:
       - name: hello-golang
-        image: 10.0.2.9/library/hello-go:0.1.0
+        image: 10.0.2.9/library/hello-go
         resources:
           limits:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: "250m"
         ports:
         - containerPort: 8080
-      minReadySeconds: 5
-      strategy:
-        # indicate which strategy we want for rolling update
-        type: RollingUpdate
-        rollingUpdate:
-          maxSurge: 1
-          maxUnavailable: 1
+      # minReadySeconds 
+  # - 容器內應用程式的啟動時間，Kubernetes 會等待設定的時間後才繼續進行升級流程
+  # - 如果沒有此欄位的話，Kubernetes 會假設該容器一開完後即可進行服務
+  # - 若未設定此欄位，在某些極端情況下可能會造成服務無法正常運作(新誕生的 pod 尚未進入可服務階段)
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # maxSurde 升級過程中最多可以比原先設定所多出的 pod 數量,此欄位可以為固定值或是比例(%)
+      # maxSurge: 1、replicas: 3,表示會先開好 1 個新 pod 後才刪掉一個舊的 pod，整個升級過程中最多會有 3+1 個 pod
+      maxSurge: 2
+      # maxUnavailable 最多可以有幾個 pod 處在無法服務的狀態,當 maxSurge 不為零時，此欄位亦不可為零
+      maxUnavailable: 1
+  # revisionHistoryLimit 每次修改的設定皆會儲存在 replica set 中,該設定為保留多久以前的紀錄
+  revisionHistoryLimit: 5
 
 ---
 
@@ -37,7 +45,7 @@ metadata:
   name: golang-service
 spec:
   selector:
-    app: golang  # 必須跟deployment相同
+    service: golang  # 必須跟deployment相同
   ports:
   - port: 8000
     targetPort: 8080
