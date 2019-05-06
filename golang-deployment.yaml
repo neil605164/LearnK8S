@@ -21,6 +21,13 @@ spec:
             cpu: "500m"
         ports:
         - containerPort: 8080
+      minReadySeconds: 5
+      strategy:
+        # indicate which strategy we want for rolling update
+        type: RollingUpdate
+        rollingUpdate:
+          maxSurge: 1
+          maxUnavailable: 1
 
 ---
 
