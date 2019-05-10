@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+## Deployment 資訊
+metadata:
+  name: demo-nodejs
+spec:
+  selector:
+    matchLabels:
+      app: nodejs
+  template:
+    metadata:
+      labels:
+        app: nodejs
+    spec:
+      containers:
+      - name: my-nodejs
+        image: zxcvbnius/docker-demo
+        ports:
+        - containerPort: 3000
+      nodeSelector:
+        hardware: nodejs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-service
+spec:
+  selector:
+    app: nodejs  # 必須跟deployment相同
+  ports:
+  - port: 3000
+    targetPort: 3000
