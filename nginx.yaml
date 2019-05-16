@@ -37,3 +37,16 @@ spec:
       maxUnavailable: 1
   # revisionHistoryLimit 每次修改的設定皆會儲存在 replica set 中,該設定為保留多久以前的紀錄
   revisionHistoryLimit: 10
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    service: http-server
+  ports:
+  - port: 80
+    targetPort: 80
