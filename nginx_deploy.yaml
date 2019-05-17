@@ -1,3 +1,32 @@
+# 撰寫 nginx 設定檔
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-map
+data:
+  test.conf: |
+    server {
+      listen       80;
+      server_name  zxc.com;
+  
+      location / {
+          root  /home/nginx_html ;
+          index index.html index.htm;
+      }
+    }
+  test1.conf: |
+    server {
+      listen       80;
+      server_name  abc.com;
+  
+      location / {
+          root  /home/nginx_html ;
+          index index1.html index1.htm;
+      }
+    }
+
+---
+## 佈署容器服務，此時服務尚未對外，僅供容器內彼此溝通
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,6 +51,15 @@ spec:
             cpu: "500m"
         ports:
         - containerPort: 80
+        volumeMounts:
+        - mountPath: /etc/nginx/conf.d # mount nginx-conf volumn to /etc/nginx/conf.d
+          readOnly: true
+          name: deployment-nginx-conf
+      volumes:
+        - name: deployment-nginx-conf
+          configMap:
+            name: nginx-map # place ConfigMap `nginx-conf` on /etc/nginx
+
   # minReadySeconds 
   # - 容器內應用程式的啟動時間，Kubernetes 會等待設定的時間後才繼續進行升級流程
   # - 如果沒有此欄位的話，Kubernetes 會假設該容器一開完後即可進行服務
@@ -39,7 +77,7 @@ spec:
   revisionHistoryLimit: 10
 
 ---
-
+## 新增對外服務
 apiVersion: v1
 kind: Service
 metadata:
