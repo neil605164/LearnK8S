@@ -9,9 +9,10 @@ spec:
     volumeMounts:
     - mountPath: /tmp
       name: tmp-volume
+    # 要求 k8s 每次都從倉庫拉image, 無視本機是否已存在映像檔
     imagePullPolicy: Always
   volumes:
     - name: tmp-volume
       hostPath:
-        path: /home/hsieh/LearnK8S/tmp
+        path: /home/hsieh/PracK8S/tmp/
         type: Directory
