@@ -1,0 +1,41 @@
+## 啟動helloworld 服務
+## 服務為 3000 Port
+## 若cpu超過 Deployment 規定的 100m時，HorizontalPodAutoscaler 就會幫我們新產生一個 Pod，最多產生5個
+## 使用  Horizontal Pod Autoscaling 前須安裝 heapster 才可以知道目前 Kubernetes Cluster 中的資源使用狀況(metrics)
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: helloworld-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: helloworld-pod
+  template:
+    metadata:
+      labels:
+        app: helloworld-pod
+    spec:
+      containers:
+      - name: my-pod
+        image: zxcvbnius/docker-demo:latest
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: 200m
+
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: helloworld-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta2
+    kind: Deployment
+    name: helloworld-deployment
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
