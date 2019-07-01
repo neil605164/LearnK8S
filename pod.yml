@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: green
+
+---
+
+# 指定使用 v1 版本 api
+apiVersion: v1
+# 指定類型為 Pod
+kind: Pod
+metadata:
+  # Pod 名稱
+  name: web
+  # Pod 標籤
+  labels:
+    app: web-service
+  # 指定 namespace
+  namespace: green
+# 規格描述
+spec:
+  # 描述容器
+  containers:
+    # 容器名稱
+  - name: frontend
+    # 容器映像檔
+    image: nginx
+    # 容器 Port 號
+    ports:
+      - containerPort: 80
