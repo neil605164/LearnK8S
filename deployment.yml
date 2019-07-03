@@ -1,0 +1,53 @@
+# 建立 namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name:  cherry
+
+---
+
+# 選擇 api server 要存取的 api 版本
+apiVersion: extensions/v1beta1
+# 物件種類
+kind: Deployment
+# 用來描述目前物件的資料
+metadata:
+  name: nginx
+  namespace: cherry
+  labels:
+    service: http-server
+spec:
+  # 運行 3 個容器
+  replicas: 3
+  selector:
+    matchLabels:
+      service: http-server
+  template:
+    metadata:
+      labels:
+        service: http-server
+    spec:
+      containers:
+      # 容器名稱
+      - name: nginx-deploy
+        # 容器映像檔
+        image: nginx
+        # 指定容器 Port 號
+        ports:
+        - containerPort: 80
+
+---
+
+apiVersion: v1
+# 指定為 Service 物件
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: cherry
+spec:
+  type: NodePort
+  selector:
+    service: http-server
+  ports:
+  - port: 80
+    targetPort: 80
